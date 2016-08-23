@@ -95,6 +95,7 @@ export default Component.extend({
 
   initializeTypeahead: function() {
     const self = this;
+
     //Setup the typeahead
     const t = this.$().typeahead({
       highlight: this.get('highlight'),
@@ -109,43 +110,53 @@ export default Component.extend({
         limit: this.get('limit'),
         source: this.get('source'),
         templates: {
-          suggestion: function (model) {
-            const item = Component.create({
-              model: model,
-              layout: self.get('suggestionTemplate')
-            }).createElement();
-            return item.element;
-          },
-          notFound: function (query) {
-            const item = Component.create({
-              query: query,
-              layout: self.get('notFoundTemplate')
-            }).createElement();
-            return item.element;
-          },
-          pending: function (query) {
-            const item = Component.create({
-              query: query,
-              layout: self.get('pendingTemplate')
-            }).createElement();
-            return item.element;
-          },
-          header: function (query, suggestions) {
-            const item = Component.create({
-              query: query,
-              suggestions: suggestions,
-              layout: self.get('headerTemplate')
-            }).createElement();
-            return item.element;
-          },
-          footer: function (query, suggestions) {
-            const item = Component.create({
-              query: query,
-              suggestions: suggestions,
-              layout: self.get('footerTemplate')
-            }).createElement();
-            return item.element;
-          }
+          suggestion:(typeof(self.get('suggestionTemplate'))==='object')?
+            function (model) {
+              const item = Component.create({
+                model: model,
+                layout: self.get('suggestionTemplate')
+              }).createElement();
+              return item.element;
+            }:
+            self.get('suggestionTemplate'),
+          notFound: (typeof(self.get('notFoundTemplate'))==='object')?
+            function (query) {
+              const item = Component.create({
+                query: query,
+                layout: self.get('notFoundTemplate')
+              }).createElement();
+              return item.element;
+            }:
+            self.get('notFoundTemplate'),
+          pending: (typeof(self.get('pendingTemplate'))==='object')?
+            function (query) {
+              const item = Component.create({
+                query: query,
+                layout: self.get('pendingTemplate')
+              }).createElement();
+              return item.element;
+            }:
+            self.get('pendingTemplate'),
+            header: (typeof(self.get('headerTemplate'))==='object')?
+              function (query, suggestions) {
+                const item = Component.create({
+                  query: query,
+                  suggestions: suggestions,
+                  layout: self.get('headerTemplate')
+                }).createElement();
+                return item.element;
+              }:
+              self.get('headerTemplate'),
+          footer: (typeof(self.get('footerTemplate'))==='object')?
+            function (query, suggestions) {
+              const item = Component.create({
+                query: query,
+                suggestions: suggestions,
+                layout: self.get('footerTemplate')
+              }).createElement();
+              return item.element;
+            }:
+            self.get('footerTemplate')
         }
     });
     this.set('_typeahead', t);
